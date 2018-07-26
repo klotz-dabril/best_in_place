@@ -21,8 +21,7 @@ module BestInPlace
         collection = opts[:collection]
         value = value.to_s
         collection = best_in_place_default_collection if collection.blank?
-        collection = best_in_place_collection_builder(type, collection)
-        
+        collection = best_in_place_collection_builder(type, collection)   
         collection = collection.to_json
         options[:data]['bip-collection'] = html_escape(collection)
       end
@@ -101,6 +100,8 @@ module BestInPlace
       elsif opts[:display_with].try(:is_a?, Proc)
         BestInPlace::DisplayMethods.add_helper_proc(klass, field, opts[:display_with])
         if opts[:collection]
+          collection = best_in_place_default_collection if collection.blank?
+          collection = best_in_place_collection_builder(type, collection)
           collection_value = collection.flat_map{|a| a[0].to_s == object.send(field) ? a[1] : nil }.compact[0]
           opts[:display_with].call(collection_value)
         else
